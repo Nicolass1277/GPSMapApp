@@ -2,7 +2,6 @@ package com.example.gpsmapapp;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -23,6 +22,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final int LOCATION_REQUEST_CODE = 101;
+    private static final boolean IS_DEBUG_MODE = true;
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
 
@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapView);
+        assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -44,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng exampleLocation = new LatLng(-33.865143, 151.209900); // Sídney
-        mMap.addMarker(new MarkerOptions().position(exampleLocation).title("Marker in Sydney"));
+        LatLng exampleLocation = new LatLng(-30.604596181532802, -71.20473959356752);
+        mMap.addMarker(new MarkerOptions().position(exampleLocation).title("Ovalle"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(exampleLocation, 10));
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -53,6 +54,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setMyLocationEnabled(true);
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+        }
+
+        if (IS_DEBUG_MODE) {
+            System.out.println("El mapa está listo y se otorgó el permiso de ubicación.");
         }
     }
 
@@ -74,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMap.setMyLocationEnabled(true);
                 }
             } else {
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Permiso denegado", Toast.LENGTH_SHORT).show();
             }
         }
     }
